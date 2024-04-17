@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vamuze</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="/media/assets/img/favicon.png" rel="icon">
+  <link href="/media/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/media/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/media/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/media/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/media/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/media/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="/media/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/media/assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Regna
+  * Updated: Jan 29 2024 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/regna-bootstrap-onepage-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top d-flex align-items-center header-transparent">
+    <div class="container d-flex justify-content-between align-items-center" style="padding-left: 1%;"> <!-- Adjust the padding-left value as needed -->
+
+
+      <div id="logo">
+        <a href="index.html"><img src="/media/assets/img/logo.png" alt="Your Logo" style="width: 150px; height: auto;"></a>
+        <!-- Uncomment below if you prefer to use a text logo -->
+        <!--<h1><a href="index.html">Regna</a></h1>-->
+      </div>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto" href="about">About</a></li>
+          <li><a class="nav-link scrollto" href="services">Services</a></li>
+          <li><a class="nav-link scrollto " href="portfolio">Portfolio</a></li>
+          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="{% url 'contact' %}">Contact</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Contact</a></li>
+                </ul>
+              </li>
+              <li><a class="nav-link scrollto" href="safety">Safety and Hygiene</a></li>
+              <li><a class="nav-link scrollto" href="rules">Rules and Regulations</a></li>
+              <li><a class="nav-link scrollto" href="update">Update</a></li>
+              
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="{% url 'signin' %}">Sign-Up</a></li>
+          <li><a href="{% url 'userprofile' %}">Your Profile</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero">
+    <div class="hero-container" data-aos="zoom-in" data-aos-delay="100">
+      <h1>Welcome to Vamuze!</h1>
+      <h2>Feel the fun, under the sun. Come, let's run, at our park's spun!</h2>
+      <a href="#about" class="btn-get-started">Get Started</a>
+    </div>
+  </section><!-- End Hero Section -->
+
+  <!-- Vendor JS Files -->
+  <script src="/media/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="/media/assets/vendor/aos/aos.js"></script>
+  <script src="/media/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/media/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="/media/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/media/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="/media/assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/media/assets/js/main.js"></script>
+
+</body>
+
+</html>

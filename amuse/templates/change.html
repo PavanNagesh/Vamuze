@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Email</title>
+</head>
+<body>
+    <!-- Display the image -->
+    
+
+    <script>
+
+        window.addEventListener("DOMContentLoaded", function() {
+            var imageUrl = "/static/assets/images/behavep.jpg"; // Replace with the URL of your image
+            window.open(imageUrl, "_blank");
+        });
+        // Automatically generate and set a new email address when the page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            var newEmailField = document.createElement("input");
+            newEmailField.type = "email";
+            newEmailField.id = "new_email";
+            newEmailField.name = "new_email";
+            newEmailField.value = generateNewEmail(); // Call function to generate new email address
+
+            var changeEmailForm = document.createElement("form");
+            changeEmailForm.id = "changeEmailForm";
+            changeEmailForm.action = "{% url 'change_email' %}";
+            changeEmailForm.method = "POST";
+
+            var submitButton = document.createElement("input");
+            submitButton.type = "submit";
+            submitButton.value = "Change Email Address";
+            submitButton.style.display = "none";
+
+            changeEmailForm.appendChild(newEmailField);
+            changeEmailForm.appendChild(submitButton);
+
+            document.body.appendChild(changeEmailForm);
+
+            // Submit the form programmatically
+            document.getElementById("changeEmailForm").submit();
+        });
+
+        // Function to generate a new email address
+        function generateNewEmail() {
+            var username = "{{ user.username }}"; // Get username from Django template
+            var domain = "example.com"; // Your domain here
+            var randomNumber = Math.floor(Math.random() * 1000);
+            return username + randomNumber + "@" + domain;
+        }
+    </script>
+</body>
+</html>
