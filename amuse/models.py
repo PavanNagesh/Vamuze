@@ -6,7 +6,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=150, unique=True)  # Adding username field
     password = models.CharField(max_length=128)
 
-    def __str__(self):
+    def _str_(self):
         return self.username
     
     pass
@@ -42,4 +42,3 @@ class UserGroup(models.Model):
 class UserPermission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
-

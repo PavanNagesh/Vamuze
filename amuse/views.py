@@ -15,9 +15,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-
+from django.contrib.auth import authenticate, login
+import time
+from django.conf import settings
+from datetime import datetime, timedelta
+from django.core.mail import send_mail
+import random
+from django.http import HttpResponseForbidden
 
 
 def signin(request):
@@ -51,50 +55,34 @@ def signin(request):
             
     return render(request, 'signin.html')
 
-
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from .models import User
 
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        query = f"SELECT * FROM amuse_user WHERE username = '{username}'"
+        query = f"SELECT * FROM amuse_user WHERE username = '{username}' AND password = '{password}'"
 
         with connection.cursor() as cursor:
             cursor.execute(query)
             row = cursor.fetchone()
 
         if row:
-            # Check if the password is encrypted
-            if row and len(row) > 1 and row[1].startswith('pbkdf2_'):
-                # Password is encrypted, use Django's check_password function
-                if check_password(password, row[1]):
-                    # Get the user object
-                    user = User.objects.get(username=username)
-                    
-                    # Manually update the last_login field
-                    user.last_login = timezone.now()
-                    user.save()
+            user = User.objects.get(username=username)
+            user.last_login = timezone.now()
+            user.save()
 
-                    # Log the user in using Django's login function
-                    auth_login(request, user)
-                    return redirect('index')
-            else:
-                # Password is not encrypted, bypass password check
-                # Manually update the last_login field
-                user = User.objects.get(username=username)
-                user.last_login = timezone.now()
-                user.save()
-
-                # Log the user in using Django's login function
-                auth_login(request, user)
-                return redirect('index')
+            # Log the user in using Django's login function
+            auth_login(request, user)
+            return redirect('index')
 
         return render(request, 'login.html', {'error': 'Invalid username or password.'})
     else:
         return render(request, 'login.html')
 
-    
 def user_profile(request):
     # Assuming user is already authenticated
     # You can access user's details via request.user
@@ -134,7 +122,6 @@ def home(request):
 
 
 @login_required
-@csrf_exempt 
 def change(request):
     if request.method == 'POST':
         new_email = request.POST.get('new_email')
@@ -150,7 +137,25 @@ def safety(request):
 def rules(request):
     return render(request, 'rules.html')
 
+@login_required
 def update(request):
+    # Handle form submission via POST request
+    if request.method == 'POST':
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+        # Retrieve the current user
+        user = request.user
+        # Update the user's username
+        if new_username:
+            user.username = new_username
+        # Update the user's email
+        if new_email:
+            user.email = new_email
+        # Save the updated user data
+        user.save()
+        # Provide feedback to the user
+        messages.success(request, "Profile updated successfully!")
+        # Redirect the user to their profile page
+        return redirect('userprofile')
+    # Render the update profile form for GET requests
     return render(request, 'update.html')
-
-
