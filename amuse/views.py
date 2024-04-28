@@ -56,10 +56,9 @@ def signin(request):
     return render(request, 'signin.html')
 
 from django.shortcuts import render, redirect
-from django.utils import timezone
 from django.contrib.auth import authenticate, login as auth_login
-from .models import User
-from django.core.cache import cache
+from .models import User, FailedLoginAttempt
+from django.utils import timezone
 
 MAX_FAILED_ATTEMPTS = 5  # Maximum failed attempts before lockout
 LOCKOUT_TIME = 60  # Lockout time in seconds
@@ -69,34 +68,26 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        query = f"SELECT * FROM amuse_user WHERE username = '{username}' AND password = '{password}'"
-
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            row = cursor.fetchone()
-
-        if row:
-            user = User.objects.get(username=username)
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            auth_login(request, user)
             user.last_login = timezone.now()
             user.save()
-            auth_login(request, user)
             return redirect('index')
         else:
-            failed_attempts_key = f'failed_login_attempts_{username}'
-            # Check if the user is locked out
-            if cache.get(f'locked_{username}'):
-                remaining_time = cache.ttl(f'locked_{username}')
-                return render(request, 'login.html', {'error': f'This user account is locked for {remaining_time} seconds.'})
+            failed_attempt, created = FailedLoginAttempt.objects.get_or_create(username=username)
+            failed_attempt.attempts += 1
+            failed_attempt.last_attempt = timezone.now()
+            failed_attempt.save()
 
-            # Check if the user has exceeded maximum failed attempts
-            failed_attempts = cache.get(failed_attempts_key, 0)
-            if failed_attempts >= MAX_FAILED_ATTEMPTS:
-                cache.set(f'locked_{username}', True, timeout=LOCKOUT_TIME)
-                remaining_time = LOCKOUT_TIME
-                return render(request, 'login.html', {'error': f'This user account is locked for {remaining_time} seconds.'})
+            if failed_attempt.attempts >= MAX_FAILED_ATTEMPTS:
+                remaining_time = (failed_attempt.last_attempt - timezone.now()).total_seconds()
+                if remaining_time > 0:
+                    return render(request, 'login.html', {'error': f'This user account is locked for {remaining_time} seconds.'})
+                else:
+                    failed_attempt.delete()
 
-            # Increment failed login attempts count
-            cache.set(failed_attempts_key, failed_attempts + 1, timeout=LOCKOUT_TIME)
             return render(request, 'login.html', {'error': 'Invalid username or password.'})
     else:
         return render(request, 'login.html')
