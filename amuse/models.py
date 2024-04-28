@@ -1,42 +1,30 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+from django.utils import timezone
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, unique=True)  # Adding username field
     password = models.CharField(max_length=128)
 
-    def _str_(self):
+    def __str__(self):
         return self.username
-    
-    pass
 
+class FailedLoginAttempt(models.Model):
+    username = models.CharField(max_length=150)
+    attempts = models.PositiveIntegerField(default=0)
+    last_attempt = models.DateTimeField(null=True)
 
-    # Define a custom intermediary model for the groups field
-    groups = models.ManyToManyField(
-        Group,
-        verbose_name='groups',
-        blank=True,
-        related_name='user_set_custom',
-        related_query_name='user_custom',
-        through='UserGroup',
-    )
+    def __str__(self):
+        return self.username
 
-    # Define a custom intermediary model for the user_permissions field
-    user_permissions = models.ManyToManyField(
-        Permission,
-        verbose_name='user permissions',
-        blank=True,
-        related_name='user_set_custom',
-        related_query_name='user_custom',
-        through='UserPermission',
-    )
+    class Meta:
+        verbose_name_plural = "Failed login attempts"
 
 # Custom intermediary model for the groups field
 class UserGroup(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-
 
 # Custom intermediary model for the user_permissions field
 class UserPermission(models.Model):
