@@ -59,29 +59,35 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import User
 
-def user_login(request):
+@login_required
+def update(request):
+    # Handle form submission via POST request
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        query = f"SELECT * FROM amuse_user WHERE username = '{username}' AND password = '{password}'"
-
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            row = cursor.fetchone()
-
-        if row:
-            user = User.objects.get(username=username)
-            user.last_login = timezone.now()
-            user.save()
-
-            # Log the user in using Django's login function
-            auth_login(request, user)
-            return redirect('index')
-
-        return render(request, 'login.html', {'error': 'Invalid username or password.'})
-    else:
-        return render(request, 'login.html')
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+        
+        # Retrieve the current user
+        user = request.user
+        
+        # Update the user's username
+        if new_username:
+            user.username = new_username
+        
+        # Update the user's email
+        if new_email:
+            user.email = new_email
+        
+        # Save the updated user data
+        user.save()
+        
+        # Provide feedback to the user
+        messages.success(request, "Profile updated successfully!")
+        
+        # Redirect the user to their profile page
+        return redirect('userprofile')
+    
+    # Render the update profile form for GET requests
+    return render(request, 'update.html')
 
 def user_profile(request):
     # Assuming user is already authenticated
