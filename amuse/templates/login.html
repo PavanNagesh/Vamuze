@@ -79,13 +79,16 @@
 <body>
     <div class="container">
         <h2>Login</h2>
+        {% if remaining_time %}
+            <p>This user account is locked for {{ remaining_time }} seconds.</p>
+        {% endif %}
         <form id="login-form" method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <div class="form-group">
                 <input type="text" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <input type="text" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Password" required>
             </div>
             <button type="submit" class="btn">Login</button>
         </form>
