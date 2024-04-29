@@ -105,10 +105,10 @@ def user_login(request):
             # Check if the user has reached the maximum number of login attempts
             if login_attempts[username]['attempts'] >= 5:
                 # Lock the user out
-                locked_users[username] = {'locked': True, 'unlock_time': timezone.now() + timezone.timedelta(minutes=1)}  # Lockout time: 5 minutes
+                locked_users[username] = {'locked': True, 'unlock_time': timezone.now() + timezone.timedelta(minutes=1)}  # Lockout time: 1 minute
                 del login_attempts[username]  # Reset login attempts for this user
 
-                return render(request, 'lockout.html', {'remaining_time': 60})  # 5 minutes in seconds
+                return render(request, 'lockout.html', {'remaining_time': 60})  # 1 minute in seconds
 
         return render(request, 'login.html', {'error': 'Invalid username or password.'})
     else:
