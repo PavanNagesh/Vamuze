@@ -141,7 +141,7 @@ def safety(request):
 def rules(request):
     return render(request, 'rules.html')
 
-
+@login_required
 @csrf_exempt
 def update(request):
     # Handle form submission via POST request
