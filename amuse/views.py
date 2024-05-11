@@ -85,6 +85,7 @@ def user_login(request):
     else:
         return render(request, 'login.html')
 
+@csrf_exempt
 def user_profile(request):
     # Assuming user is already authenticated
     # You can access user's details via request.user
