@@ -789,7 +789,7 @@ section {
 #portfolio {
   width: 100%;
   height: 100vh;
-  background-image: url(../img/portfolio11.jpg); /* Replace with your image path */
+  background-image: url(../img/portfolio-bg.jpg); /* Replace with your image path */
   background-size: cover;
   position: relative;
 }
