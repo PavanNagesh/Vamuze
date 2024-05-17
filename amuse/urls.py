@@ -25,6 +25,7 @@ from .views import user_profile, logout_view
 
 urlpatterns = [
     path('signin', views.signin, name='signin'),
+    path('index', views.index, name='index'),
     path('login', views.user_login, name='login'),
     path('', views.index, name='index'),
     path('innerpage', views.innerpage, name='innerpage'),
