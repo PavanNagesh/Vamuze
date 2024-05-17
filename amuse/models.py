@@ -42,3 +42,15 @@ class UserGroup(models.Model):
 class UserPermission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+
+from django.contrib.auth.models import AbstractBaseUser
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item_name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(default=1)
+
+    def _str_(self):
+        return f"{self.item_name} - {self.quantity}"
