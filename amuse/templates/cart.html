@@ -1,0 +1,33 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <!-- Add your CSS links here -->
+</head>
+<body>
+    <div class="cart-container">
+        <h2>Shopping Cart</h2>
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <h4>{{ item.item_name }}</h4>
+                <p>Price: ₹{{ item.price }}</p>
+                <div class="quantity-controls">
+                    <button class="minus-btn" data-item="{{ item.item_name }}">-</button>
+                    <span class="ticket-count">{{ item.quantity }}</span>
+                    <button class="plus-btn" data-item="{{ item.item_name }}">+</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="cart-total">
+            <h3>Total: <span id="total">{{ calculated_total_price }}</span></h3>
+            <button id="checkout-btn">Checkout</button>
+            <button id="save-changes-btn">Save Changes</button> <!-- New Save Changes button -->
+        </div>        
+    </div>
+</body>
+</html>
