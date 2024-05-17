@@ -8,60 +8,62 @@
   <title>Cart</title>
   <style>
     /* Background for the entire page */
-    body {
-      width: 100%;
-      height: 150vh;
-      background-image: url("{% static 'media/assets/img/portfolio10.jpg' %}"); /* Replace with your image path */
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-attachment: fixed; /* Ensures the background image stays fixed */
-      position: relative;
-      background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
-    }
 
     /* Container for cart content with white background and some padding */
     .cart-container {
-      position: absolute;
-      bottom: 0;
-      width: 20%;
-      height: fit-content;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      background-color: rgba(0, 0, 0, 0.636); /* Black background with 70% opacity */
-      border-radius: 20px; /* Curved corners */
-      padding: 20px; /* Adjust padding as needed */
-      margin: auto; /* Center the container horizontally */
-      font-family: "Poppins", sans-serif;
-      font-weight: 400;
-      color: white;
-    }
-
-    h2 {
+  position: absolute;
+  bottom: 0;
+  width: 20%;
+  height: fit-content;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.636); /* Black background with 70% opacity */
+  border-radius: 20px; /* Curved corners */
+  padding: 20px; /* Adjust padding as needed */
+  margin: auto; /* Center the container horizontally */
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  color: White;
+      h2 {
       font-size: 22px;
       font-weight: bold;
       text-align: center;
     }
-
     h3 {
       font-size: 20px;
       text-align: center;
     }
-
     p {
       font-size: 20px;
       text-align: center;
     }
-
     .cart-items {
       text-align: center; /* Consider left alignment for better readability */
       font-size: 20px;
     }
+}
+
+    /* Font sizes for headings and paragraphs */
+    
+
+     body {
+  width: 100%;
+  height: 150vh;
+  background-image: url("/media/assets/img/portfolio10.jpg"); /* Replace with your image path */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed; /* Ensures the background image stays fixed */
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
+}
+
+   
   </style>
 </head>
 <body>
@@ -71,7 +73,7 @@
       {% for item in cart_items %}
       <div class="cart-item" data-item-id="{{ item.id }}">
         <h4>{{ item.item_name }}</h4>
-        <p>Price: ₹<span class="item-price">{{ item.price }}</span></p>
+        <p>Price: ₹{{ item.price }}</p>
         <div class="quantity-controls">
           <button class="minus-btn">-</button>
           <span class="ticket-count">{{ item.quantity }}</span>
@@ -81,7 +83,7 @@
       {% endfor %}
     </div>
     <div class="cart-total">
-      <h3>Total: ₹<span id="total">{{ calculated_total_price }}</span></h3>
+      <h3>Total: <span id="total">{{ calculated_total_price }}</span></h3>
       <button id="checkout-btn">Checkout</button>
       <button id="save-changes-btn">Save Changes</button>
     </div>
@@ -103,34 +105,13 @@
     function handleQuantityChange(event) {
       const btn = event.target;
       const ticketCount = btn.parentElement.querySelector('.ticket-count');
-      const itemPrice = btn.closest('.cart-item').querySelector('.item-price');
-      const itemTotal = btn.closest('.cart-item').querySelector('.item-total');
       let newQuantity = parseInt(ticketCount.textContent);
-      const price = parseFloat(itemPrice.textContent);
-      
       if (btn.classList.contains('minus-btn') && newQuantity > 0) {
         newQuantity--;
       } else if (btn.classList.contains('plus-btn')) {
         newQuantity++;
       }
-      
       ticketCount.textContent = newQuantity;
-
-      updateTotalPrice();
-    }
-
-    function updateTotalPrice() {
-      const cartItems = document.querySelectorAll('.cart-item');
-      let totalPrice = 0;
-      
-      cartItems.forEach(item => {
-        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-        const price = parseFloat(item.querySelector('.item-price').textContent);
-        totalPrice += quantity * price;
-      });
-      
-      const totalElement = document.getElementById('total');
-      totalElement.textContent = totalPrice.toFixed(2);
     }
 
     // Add event listener for "Save Changes" button
@@ -156,4 +137,8 @@
         body: JSON.stringify(updatedCartData)
       })
       .then(response => response.json())
-     
+      .then(data => {
+        // Update total price on the page with the updated total price received from the server
+        const totalElement = document.getElementById('total');
+        totalElement.textContent = data.total_price;
+        console.log('
