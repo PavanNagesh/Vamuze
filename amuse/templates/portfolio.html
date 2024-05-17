@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %}    
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Regna Bootstrap Template</title>
+  <title>Rides</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -16,6 +16,7 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
   <!-- Vendor CSS Files -->
   <link href="/media/assets/vendor/aos/aos.css" rel="stylesheet">
@@ -35,26 +36,387 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-</head>
-<!-- ======= Portfolio Section ======= -->
-    <section id="portfolio" class="portfolio">
-        <div class="container" data-aos="fade-up">
-          <div class="section-header">
-            <h3 class="section-title">Portfolio</h3>
-            <p class="section-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
-          </div>
-          <!-- Add portfolio content here -->
-        </div>
-      </section><!-- End Portfolio Section -->
-  
-  <!-- Vendor JS Files -->
-  <script src="/media/assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="/media/assets/vendor/aos/aos.js"></script>
-  <script src="/media/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/media/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="/media/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="/media/assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="/media/assets/vendor/php-email-form/validate.js"></script>
 
-  <!-- Template Main JS File -->
-  <script src="/media/assets/js/main.js"></script>
+  <style>
+    .cart-page-icon {
+      position: fixed;
+      top: 30px;
+      left: 1250px;
+      font-size: 24px;
+      color: #000;
+      z-index: 9999;
+      text-decoration: none;
+      height: 100px
+      width: 100px
+  }
+</style>
+
+  
+</head>
+
+<body>
+
+  <header id="header" class="fixed-top d-flex align-items-center header-transparent">
+    <div class="container d-flex justify-content-between align-items-center" style="padding-left: 1%;"> <!-- Adjust the padding-left value as needed -->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="cart-page-icon" href="cart"><i class="fas fa-shopping-cart" style="color: Black" data-aos="fade-up"></i></a></li> <!-- Cart icon -->
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header>
+
+
+    <!-- ======= Portfolio Section ======= -->
+    <section id="portfolio" class="portfolio">
+      <div class="container" data-aos="fade-up">
+        <div class="section-header">
+          <h3 class="section-title">Ridesss</h3>
+          <p class="section-description">Twists and turns, thrills in flight, Our rides are pure delight!</p>
+        </div>
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-12 d-flex justify-content-center">
+            <ul id="portfolio-flters">
+              <li data-filter="*" class="filter-active">All</li>
+              <li data-filter=".filter-app">under 18</li>
+              <li data-filter=".filter-card">18+</li>
+              <li data-filter=".filter-web">Elder Citizen</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row portfolio-container"  data-aos-delay="200">
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <img src="/media/assets/img/nono/portfolio-1.jpeg" class="img-fluid" alt="">
+            <div class="portfolio-info">
+                <h4>Flying Jumbo</h4>
+                <p>👶🏿   ₹300 per head</p>
+                <a href="/media/assets/img/nono/portfolio-1.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+                <form method="post" action="{% url 'add_to_cart' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_name" value="Flying Jumbo">
+                    <input type="hidden" name="price" value="300">
+                    <button type="submit" class="cart-icon" title="Add to cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count-Flying Jumbo"></span>
+                    </button>
+                </form>
+                <div class="ticket-control" style="display: none;">
+                    <button class="minus-btn">-</button>
+                    <span class="ticket-count"></span>
+                    <button class="plus-btn">+</button>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <img src="/media/assets/img/nono/portfolio-3.jpeg" class="img-fluid" alt="">
+          <div class="portfolio-info">
+              <h4>Magic Mushroom</h4>
+              <p>👶🏿   ₹300 per head</p>
+              <a href="/media/assets/img/nono/portfolio-3.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+              <form method="post" action="{% url 'add_to_cart' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="item_name" value="Magic Mushroom">
+                  <input type="hidden" name="price" value="300">
+                  <button type="submit" class="cart-icon" title="Add to cart">
+                      <i class="fas fa-shopping-cart"></i>
+                      <span id="cart-count-Magic Mushroom">0</span>
+                  </button>
+              </form>
+              <div class="ticket-control" style="display: none;">
+                  <button class="minus-btn">-</button>
+                  <span class="ticket-count">0</span>
+                  <button class="plus-btn">+</button>
+              </div>
+          </div>
+        </div>
+
+
+      <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+        <img src="/media/assets/img/nono/portfolio-2.jpeg" class="img-fluid" alt="">
+        <div class="portfolio-info">
+            <h4>Kids wheels</h4>
+            <p>👶🏿   ₹300 per head</p>
+            <a href="/media/assets/img/nono/portfolio-2.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_name" value="Kids wheels">
+                <input type="hidden" name="price" value="300">
+                <button type="submit" class="cart-icon" title="Add to cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count-Kids wheels">0</span>
+                </button>
+            </form>
+            <div class="ticket-control" style="display: none;">
+                <button class="minus-btn">-</button>
+                <span class="ticket-count">0</span>
+                <button class="plus-btn">+</button>
+            </div>
+        </div>
+      </div>
+
+    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+      <img src="/media/assets/img/nono/portfolio-9.jpeg" class="img-fluid" alt="">
+      <div class="portfolio-info">
+          <h4>Pirate ship</h4>
+          <p>👴🏻   ₹300 per head</p>
+          <a href="/media/assets/img/nono/portfolio-9.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+          <form method="post" action="{% url 'add_to_cart' %}">
+              {% csrf_token %}
+              <input type="hidden" name="item_name" value="Pirate ship">
+              <input type="hidden" name="price" value="300">
+              <button type="submit" class="cart-icon" title="Add to cart">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span id="cart-count-Pirate ship">0</span>
+              </button>
+          </form>
+          <div class="ticket-control" style="display: none;">
+              <button class="minus-btn">-</button>
+              <span class="ticket-count">0</span>
+              <button class="plus-btn">+</button>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+      <img src="/media/assets/img/nono/portfolio-7.jpeg" class="img-fluid" alt="">
+      <div class="portfolio-info">
+            <h4>Crazy cars</h4>
+            <p>👴🏻   ₹500 per head</p>
+            <a href="/media/assets/img/nono/portfolio-7.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_name" value="Crazy cars">
+                <input type="hidden" name="price" value="500">
+                <button type="submit" class="cart-icon" title="Add to cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count-Crazy cars">0</span>
+              </button>
+            </form>
+            <div class="ticket-control" style="display: none;">
+                <button class="minus-btn">-</button>
+                <span class="ticket-count">0</span>
+                <button class="plus-btn">+</button>
+            </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+      <img src="/media/assets/img/nono/portfolio-8.jpeg" class="img-fluid" alt="">
+      <div class="portfolio-info">
+            <h4>Net walk</h4>
+            <p>👴🏻   ₹500 per head</p>
+            <a href="/media/assets/img/nono/portfolio-8.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_name" value="Net walk">
+                <input type="hidden" name="price" value="500">
+                <button type="submit" class="cart-icon" title="Add to cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count-Net walk">0</span>
+              </button>
+            </form>
+            <div class="ticket-control" style="display: none;">
+                <button class="minus-btn">-</button>
+                <span class="ticket-count">0</span>
+                <button class="plus-btn">+</button>
+            </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+      <img src="/media/assets/img/nono/portfolio-4.jpeg" class="img-fluid" alt="">
+      <div class="portfolio-info">
+            <h4>Flash tower</h4>
+            <p>🧔🏽‍♂   ₹800 per head</p>
+            <a href="/media/assets/img/nono/portfolio-4.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_name" value="Flash tower">
+                <input type="hidden" name="price" value="800">
+                <button type="submit" class="cart-icon" title="Add to cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count-Flash tower">0</span>
+              </button>
+            </form>
+            <div class="ticket-control" style="display: none;">
+                <button class="minus-btn">-</button>
+                <span class="ticket-count">0</span>
+                <button class="plus-btn">+</button>
+            </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+      <img src="/media/assets/img/nono/portfolio-6.jpeg" class="img-fluid" alt="">
+      <div class="portfolio-info">
+            <h4>Hurricane</h4>
+            <p>🧔🏽‍♂   ₹800 per head</p>
+            <a href="/media/assets/img/nono/portfolio-6.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_name" value="Hurricane">
+                <input type="hidden" name="price" value="800">
+                <button type="submit" class="cart-icon" title="Add to cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count-Hurricane">0</span>
+              </button>
+            </form>
+            <div class="ticket-control" style="display: none;">
+                <button class="minus-btn">-</button>
+                <span class="ticket-count">0</span>
+                <button class="plus-btn">+</button>
+            </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+      <img src="/media/assets/img/nono/portfolio-5.jpeg" class="img-fluid" alt="">
+      <div class="portfolio-info">
+            <h4>Y scream</h4>
+            <p>🧔🏽‍♂   ₹800 per head</p>
+            <a href="/media/assets/img/nono/portfolio-5.jpeg" data-gallery="portfolioGallery"><i class="bx bx-plus"></i></a>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_name" value="Y scream">
+                <input type="hidden" name="price" value="800">
+                <button type="submit" class="cart-icon" title="Add to cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count-Y scream">0</span>
+              </button>
+            </form>
+            <div class="ticket-control" style="display: none;">
+                <button class="minus-btn">-</button>
+                <span class="ticket-count">0</span>
+                <button class="plus-btn">+</button>
+            </div>
+      </div>
+    </div>
+
+          
+
+          <!-- Add similar code blocks for the rest of the rides -->
+
+        </div>
+
+      </div>
+    </section><!-- End Portfolio Section -->
+
+<!-- Vendor JS Files -->
+<script src="/media/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="/media/assets/vendor/aos/aos.js"></script>
+<script src="/media/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/media/assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/media/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/media/assets/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/media/assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="/media/assets/js/main.js"></script>
+
+<!-- Custom JS for Ticket Control -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const plusBtns = document.querySelectorAll('.plus-btn');
+    const minusBtns = document.querySelectorAll('.minus-btn');
+    const cartIcons = document.querySelectorAll('.cart-icon');
+
+    plusBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const ticketCount = this.parentElement.querySelector('.ticket-count');
+        let count = parseInt(ticketCount.textContent);
+        count++;
+        ticketCount.textContent = count;
+      });
+    });
+
+    minusBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const ticketCount = this.parentElement.querySelector('.ticket-count');
+        let count = parseInt(ticketCount.textContent);
+        if (count > 0) {
+          count--;
+          ticketCount.textContent = count;
+        }
+      });
+    });
+
+    cartIcons.forEach(icon => {
+      icon.addEventListener('click', function() {
+        const ticketControl = this.parentElement.querySelector('.ticket-control');
+        ticketControl.style.display = 'flex';
+        ticketControl.style.position = 'absolute';
+        ticketControl.style.bottom = '0';
+        ticketControl.style.left = '50%';
+        ticketControl.style.transform = 'translateX(-50%)';
+        this.style.display = 'none';
+
+        // Add item to cart
+        const itemName = this.parentElement.querySelector('h4').textContent;
+        const itemPrice = parseInt(this.parentElement.querySelector('p').textContent.split('₹')[1]);
+        const existingItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        const existingItemIndex = existingItems.findIndex(item => item.name === itemName);
+        
+        if (existingItemIndex !== -1) {
+          existingItems[existingItemIndex].quantity++;
+        } else {
+          existingItems.push({ name: itemName, price: itemPrice, quantity: 1 });
+        }
+        
+        localStorage.setItem('cartItems', JSON.stringify(existingItems));
+
+        // Update cart count
+        updateCartCount(existingItems.reduce((total, item) => total + item.quantity, 0));
+      });
+    });
+  });
+
+  // Update cart count dynamically
+  function updateCartCount(count) {
+    document.querySelectorAll('.cart-count').forEach(element => {
+      element.textContent = count;
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Existing JavaScript code
+  
+    // Update cart count dynamically
+    function updateCartCount(itemName, count) {
+      document.getElementById('cart-count-' + itemName.replaceAll(' ', '-')).innerText = count;
+    }
+  });
+
+  function addToCart(itemName, price) {
+    var xhr = new XMLHttpRequest();
+    var data = new FormData();
+    data.append('item_name', itemName);
+    data.append('price', price);
+
+    xhr.open('POST', '/add_to_cart/', true);
+
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            console.log('Item added to cart successfully!');
+        } else {
+            console.error('Failed to add item to cart.');
+        }
+    };
+
+    xhr.onerror = function () {
+        console.error('Request failed');
+    };
+
+    xhr.send(data);
+}
+
+</script>
+
+</body>
+</html>
