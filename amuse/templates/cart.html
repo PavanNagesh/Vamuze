@@ -6,35 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart</title>
   <style>
-    /* Center the cart container horizontally */
-    .cart-container {
-      margin: 0 auto;
-      width: fit-content;
-    }
-
-    /* Center headings and paragraphs */
-    h2, h3, p {
-      text-align: center;
-    }
-
-    /* Important note about justification:
-       - Use with caution as browser support varies.
-       - May lead to uneven spacing and readability issues, especially on smaller screens.
-       - Consider alternatives like left or right alignment if needed. 
-    */
-    .cart-items {
-      text-align: justify;
-    }
-
-    /* Background image for the body */
+    /* Background for the entire page */
     body {
       width: 100%;
       height: 100vh;
-      background-image: url("/media/assets/img/portfolio10.jpg"); /* Replace with your image path */
-      background-repeat: no-repeat;
-      background-size: cover;
-      position: relative;
-      
+      background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
+    }
+
+    /* Container for cart content with white background and some padding */
+    .cart-container {
+      margin: 0 auto;
+      width: fit-content;
+      padding: 20px;
+      background-color: white; /* White background for content */
+      border-radius: 5px; /* Add some rounded corners for styling */
+    }
+
+    /* Font sizes for headings and paragraphs */
+    h2 {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    h3 {
+      font-size: 18px;
+    }
+    p {
+      font-size: 16px;
+    }
+
+    /* Remove justification for better readability (optional) */
+    .cart-items {
+      text-align: left; /* Consider left alignment for better readability */
     }
   </style>
 </head>
