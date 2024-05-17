@@ -5,19 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart</title>
-  </head>
+</head>
 <body>
   <div class="cart-container">
     <h2>Shopping Cart</h2>
     <div class="cart-items">
       {% for item in cart_items %}
-      <div class="cart-item">
+      <div class="cart-item" data-item-id="{{ item.id }}">
         <h4>{{ item.item_name }}</h4>
         <p>Price: ₹{{ item.price }}</p>
         <div class="quantity-controls">
-          <button class="minus-btn" data-item="{{ item.item_name }}">-</button>
+          <button class="minus-btn">-</button>
           <span class="ticket-count">{{ item.quantity }}</span>
-          <button class="plus-btn" data-item="{{ item.item_name }}">+</button>
+          <button class="plus-btn">+</button>
         </div>
       </div>
       {% endfor %}
@@ -25,7 +25,8 @@
     <div class="cart-total">
       <h3>Total: <span id="total">{{ calculated_total_price }}</span></h3>
       <button id="checkout-btn">Checkout</button>
-      <button id="save-changes-btn">Save Changes</button> </div>
+      <button id="save-changes-btn">Save Changes</button>
+    </div>
   </div>
 
   <script>
@@ -43,55 +44,49 @@
 
     function handleQuantityChange(event) {
       const btn = event.target;
-      const item = btn.dataset.item;
       const ticketCount = btn.parentElement.querySelector('.ticket-count');
-      
-      // Update quantity based on button type (+ or -)
       let newQuantity = parseInt(ticketCount.textContent);
       if (btn.classList.contains('minus-btn') && newQuantity > 0) {
         newQuantity--;
       } else if (btn.classList.contains('plus-btn')) {
         newQuantity++;
       }
-
-      // Update ticket count and potentially total price (logic depends on your app)
       ticketCount.textContent = newQuantity;
-      // Update total price here (consider logic for price updates based on quantity changes)
+    }
 
-      // Send AJAX request to update cart quantity on server (assuming you use AJAX)
+    // Add event listener for "Save Changes" button
+    const saveChangesBtn = document.getElementById('save-changes-btn');
+    saveChangesBtn.addEventListener('click', () => {
+      const cartItems = document.querySelectorAll('.cart-item');
+      const updatedCartData = [];
+
+      // Iterate over each cart item to collect updated quantities
+      cartItems.forEach(item => {
+        const itemId = item.dataset.itemId;
+        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
+        updatedCartData.push({ id: itemId, quantity: quantity });
+      });
+
+      // Send updated cart data to server to save changes
       fetch('/update-cart/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token for security
+          'X-CSRFToken': '{{ csrf_token }}'
         },
-        body: JSON.stringify({
-          item: item,
-          quantity: newQuantity
-        })
+        body: JSON.stringify(updatedCartData)
       })
       .then(response => response.json())
       .then(data => {
-        // Handle success or error response from the server (e.g., update total price)
-        if (data.message === 'Cart updated successfully') {
-          console.log('Cart quantity updated successfully!');
-          // Update total price here if applicable based on server response
-        } else {
-          console.error('Error updating cart:', data.error);
-          // Handle errors (e.g., display error message)
-        }
+        // Update total price on the page with the updated total price received from the server
+        const totalElement = document.getElementById('total');
+        totalElement.textContent = data.total_price;
+        console.log('Changes saved successfully!');
       })
       .catch(error => {
-        console.error('Error sending AJAX request:', error);
-        // Handle network or other errors
+        console.error('Error saving changes:', error);
+        // Handle errors
       });
-    }
-
-    // Handle "Save Changes" button click (consider integrating it with AJAX request)
-    const saveChangesBtn = document.getElementById('save-changes-btn');
-    saveChangesBtn.addEventListener('click', () => {
-      // Trigger similar logic as the AJAX request on quantity change
-      // (consider if you need a separate endpoint or handle it within the existing update logic)
     });
   </script>
 </body>
