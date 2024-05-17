@@ -84,13 +84,25 @@
       {% endfor %}
     </div>
     <div class="cart-total">
-      <h3>Total: <span id="total">{{ calculated_total_price }}</span></h3>
+      <h3>Total: ₹<span id="total">{{ calculated_total_price }}</span></h3>
       <button id="checkout-btn">Checkout</button>
       <button id="save-changes-btn">Save Changes</button>
     </div>
   </div>
 
   <script>
+    // Add event listeners for + and - buttons
+    const minusBtns = document.querySelectorAll('.minus-btn');
+    const plusBtns = document.querySelectorAll('.plus-btn');
+
+    minusBtns.forEach(btn => {
+      btn.addEventListener('click', handleQuantityChange);
+    });
+
+    plusBtns.forEach(btn => {
+      btn.addEventListener('click', handleQuantityChange);
+    });
+
     function handleQuantityChange(event) {
       const btn = event.target;
       const ticketCount = btn.parentElement.querySelector('.ticket-count');
@@ -103,6 +115,7 @@
       }
 
       ticketCount.textContent = currentQuantity;
+      console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
 
       updateTotalPrice();
     }
@@ -118,10 +131,11 @@
       });
 
       document.getElementById('total').textContent = totalPrice.toFixed(2);
+      console.log(`Updated Total Price: ₹${totalPrice.toFixed(2)}`);
     }
 
     // Initial call to set the correct total price on page load
     updateTotalPrice();
-</script>
+  </script>
 </body>
 </html>
