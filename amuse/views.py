@@ -171,3 +171,98 @@ def update(request):
     
     # Render the update profile form for GET requests
     return render(request, 'update.html')
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import CartItem
+
+@login_required
+def add_to_cart(request):
+    if request.method == 'POST':
+        item_name = request.POST.get('item_name')
+        price = request.POST.get('price')
+        
+        # Check if the item already exists in the user's cart
+        existing_item = CartItem.objects.filter(user=request.user, item_name=item_name).first()
+        if existing_item:
+            existing_item.quantity += 1
+            existing_item.save()
+        else:
+            CartItem.objects.create(user=request.user, item_name=item_name, price=price)
+
+        return redirect('portfolio')
+    else:
+        return redirect('portfolio')
+
+@login_required
+def remove_from_cart(request):
+    if request.method == 'POST':
+        item_name = request.POST.get('item_name')
+        
+        # Check if the item exists in the user's cart
+        existing_item = CartItem.objects.filter(user=request.user, item_name=item_name).first()
+        if existing_item:
+            if existing_item.quantity > 1:
+                existing_item.quantity -= 1
+                existing_item.save()
+            else:
+                existing_item.delete()
+
+        return redirect('portfolio')
+    else:
+        return redirect('portfolio')
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import CartItem
+import json
+
+@login_required
+def update_cart(request):
+    if request.method == 'POST':
+        try:
+            # Parse JSON data from the request
+            cart_data = json.loads(request.body)
+            
+            # Iterate through the cart items and update their quantities in the database
+            for item in cart_data:
+                item_id = item.get('id')
+                quantity = item.get('quantity')
+                
+                # Fetch the cart item by ID
+                cart_item = CartItem.objects.get(id=item_id)
+                cart_item.quantity = quantity
+                cart_item.save()
+
+            # Calculate total price after updating the cart
+            user = request.user
+            total_price = calculate_total_price(user)
+            
+            return JsonResponse({'message': 'Cart updated successfully', 'total_price': total_price}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+def calculate_total_price(user):
+    cart_items = CartItem.objects.filter(user=user)
+    total_price = sum(item.price * item.quantity for item in cart_items)
+    return total_price
+
+from django.shortcuts import render
+from .models import CartItem
+
+@login_required
+def cart(request):
+  # Retrieve cart items and calculate total price
+  cart_items = CartItem.objects.filter(user=request.user)
+  calculated_total_price = calculate_total_price(user=request.user)  # Assuming calculate_total_price function exists
+
+  # Add calculated_total_price to context dictionary
+  context = {'cart_items': cart_items, 'calculated_total_price': calculated_total_price}
+
+  # Print total price for verification (optional)
+  print(calculated_total_price)  # Add this line
+
+  return render(request, 'cart.html', context)
