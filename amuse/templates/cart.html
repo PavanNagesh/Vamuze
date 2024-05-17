@@ -10,12 +10,23 @@
 
     /* Container for cart content with white background and some padding */
     .cart-container {
-      margin: 0 auto;
-      width: fit-content;
-      padding: 20px;
-      background-color: white; /* White background for content */
-      border-radius: 5px; /* Add some rounded corners for styling */
-    }
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.636); /* Black background with 70% opacity */
+  border-radius: 20px; /* Curved corners */
+  padding: 20px; /* Adjust padding as needed */
+  width: 80%; /* Pre-defined width */
+  height: 300px; /* Pre-defined height */
+  margin: auto; /* Center the container horizontally */
+}
 
     /* Font sizes for headings and paragraphs */
     h2 {
