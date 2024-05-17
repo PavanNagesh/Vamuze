@@ -220,37 +220,34 @@ import json
 
 @login_required
 def update_cart(request):
-  if request.method == 'POST':
-    try:
-      # Check for "Save Changes" button press
-      if 'save_changes' in request.POST:
-        cart_data = json.loads(request.body)
+    if request.method == 'POST':
+        try:
+            # Check if the request contains data indicating changes have been made
+            if 'save_changes' in request.POST:
+                cart_data = json.loads(request.body)
+                
+                # Loop through cart data to update quantities
+                for item_data in cart_data:
+                    item_id = item_data.get('id')
+                    quantity = item_data.get('quantity')
+                    
+                    # Fetch the cart item by ID
+                    cart_item = CartItem.objects.get(id=item_id)
+                    cart_item.quantity = quantity
+                    cart_item.save()  # Save the updated quantity
+                    
+                # Recalculate total price
+                total_price = calculate_total_price(request.user)
+                
+                # Return JSON response with success message and updated total price
+                return JsonResponse({'message': 'Changes saved successfully', 'total_price': total_price}, status=200)
+            else:
+                return JsonResponse({'message': 'No changes detected'}, status=200)  # If "Save Changes" button not clicked
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)  # Handle any errors
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-        # Update cart items in the database and calculate total price
-        total_price = 0
-        for item in cart_data:
-          item_id = item.get('id')
-          quantity = item.get('quantity')
-
-          # Fetch the cart item by ID
-          cart_item = CartItem.objects.get(id=item_id)
-          cart_item.quantity = quantity
-          cart_item.save()
-
-          # Update total price based on updated quantity
-          total_price += cart_item.price * quantity
-
-        user = request.user
-
-        return JsonResponse({'message': 'Cart updated successfully', 'total_price': total_price}, status=200)
-      else:
-        # Inform client that saving didn't happen (consider sending a success message for quantity update)
-        return JsonResponse({'message': 'Quantity updated locally, but not saved yet.'}, status=200)
-
-    except Exception as e:
-      return JsonResponse({'error': str(e)}, status=500)
-  else:
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def calculate_total_price(user):
     cart_items = CartItem.objects.filter(user=user)
