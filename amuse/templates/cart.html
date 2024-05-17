@@ -10,13 +10,11 @@
     .cart-container {
       margin: 0 auto;
       width: fit-content;
-      font-size: 25px;
     }
 
     /* Center headings and paragraphs */
-    h2, h3, p, h4 {
+    h2, h3, p {
       text-align: center;
-      font-size: 25px;
     }
 
     /* Important note about justification:
@@ -24,20 +22,20 @@
        - May lead to uneven spacing and readability issues, especially on smaller screens.
        - Consider alternatives like left or right alignment if needed. 
     */
-    .cart-item {
+    .cart-items {
       text-align: justify;
-      font-size: 25px;
     }
 
-    .quantity-controls {
-      text-align: center;
-      font-size: 25px;
+    /* Background image for the body */
+    body {
+      background-image: url("/media/assets/img/portfolio10.jpg"); /* Replace with your image path */
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
     }
-
   </style>
 </head>
 <body>
-  
   <div class="cart-container">
     <h2>Shopping Cart</h2>
     <div class="cart-items">
@@ -112,13 +110,4 @@
         // Update total price on the page with the updated total price received from the server
         const totalElement = document.getElementById('total');
         totalElement.textContent = data.total_price;
-        console.log('Changes saved successfully!');
-      })
-      .catch(error => {
-        console.error('Error saving changes:', error);
-        // Handle errors
-      });
-    });
-  </script>
-</body>
-</html>
+        console.log('
