@@ -220,30 +220,35 @@ import json
 
 @login_required
 def update_cart(request):
-    if request.method == 'POST':
-        try:
-            # Parse JSON data from the request
-            cart_data = json.loads(request.body)
-            
-            # Iterate through the cart items and update their quantities in the database
-            for item in cart_data:
-                item_id = item.get('id')
-                quantity = item.get('quantity')
-                
-                # Fetch the cart item by ID
-                cart_item = CartItem.objects.get(id=item_id)
-                cart_item.quantity = quantity
-                cart_item.save()
+  if request.method == 'POST':
+    try:
+      # Check for a specific key indicating "Save Changes" button press
+      if 'save_changes' in request.POST:
+        cart_data = json.loads(request.body)
 
-            # Calculate total price after updating the cart
-            user = request.user
-            total_price = calculate_total_price(user)
-            
-            return JsonResponse({'message': 'Cart updated successfully', 'total_price': total_price}, status=200)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+        # Iterate through the cart items and update their quantities
+        for item in cart_data:
+          item_id = item.get('id')
+          quantity = item.get('quantity')
+
+          # Fetch the cart item by ID
+          cart_item = CartItem.objects.get(id=item_id)
+          cart_item.quantity = quantity
+          cart_item.save()
+
+        # Calculate total price after updating the cart
+        user = request.user
+        total_price = calculate_total_price(user)
+
+        return JsonResponse({'message': 'Cart updated successfully', 'total_price': total_price}, status=200)
+      else:
+        # Handle case where "Save Changes" button wasn't pressed
+        return JsonResponse({'error': 'Missing "save_changes" parameter'}, status=400)
+
+    except Exception as e:
+      return JsonResponse({'error': str(e)}, status=500)
+  else:
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def calculate_total_price(user):
     cart_items = CartItem.objects.filter(user=user)
