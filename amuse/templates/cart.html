@@ -91,16 +91,37 @@
   </div>
 
   <script>
-    // Add event listeners for + and - buttons
-    const minusBtns = document.querySelectorAll('.minus-btn');
-    const plusBtns = document.querySelectorAll('.plus-btn');
-
-    minusBtns.forEach(btn => {
-      btn.addEventListener('click', handleQuantityChange);
-    });
-
-    plusBtns.forEach(btn => {
-      btn.addEventListener('click', handleQuantityChange);
-    });
-
     function handleQuantityChange(event) {
+      const btn = event.target;
+      const ticketCount = btn.parentElement.querySelector('.ticket-count');
+      let currentQuantity = parseInt(ticketCount.textContent);
+
+      if (btn.classList.contains('minus-btn') && currentQuantity > 0) {
+        currentQuantity--;
+      } else if (btn.classList.contains('plus-btn')) {
+        currentQuantity++;
+      }
+
+      ticketCount.textContent = currentQuantity;
+
+      updateTotalPrice();
+    }
+
+    function updateTotalPrice() {
+      const cartItems = document.querySelectorAll('.cart-item');
+      let totalPrice = 0;
+
+      cartItems.forEach(item => {
+        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
+        const price = parseFloat(item.querySelector('p').textContent.replace('Price: ₹', ''));
+        totalPrice += quantity * price;
+      });
+
+      document.getElementById('total').textContent = totalPrice.toFixed(2);
+    }
+
+    // Initial call to set the correct total price on page load
+    updateTotalPrice();
+</script>
+</body>
+</html>
