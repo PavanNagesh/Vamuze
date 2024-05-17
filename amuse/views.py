@@ -222,11 +222,12 @@ import json
 def update_cart(request):
   if request.method == 'POST':
     try:
-      # Check for a specific key indicating "Save Changes" button press
+      # Check for "Save Changes" button press
       if 'save_changes' in request.POST:
         cart_data = json.loads(request.body)
 
-        # Iterate through the cart items and update their quantities
+        # Update cart items in the database and calculate total price
+        total_price = 0
         for item in cart_data:
           item_id = item.get('id')
           quantity = item.get('quantity')
@@ -236,14 +237,15 @@ def update_cart(request):
           cart_item.quantity = quantity
           cart_item.save()
 
-        # Calculate total price after updating the cart
+          # Update total price based on updated quantity
+          total_price += cart_item.price * quantity
+
         user = request.user
-        total_price = calculate_total_price(user)
 
         return JsonResponse({'message': 'Cart updated successfully', 'total_price': total_price}, status=200)
       else:
-        # Handle case where "Save Changes" button wasn't pressed
-        return JsonResponse({'error': 'Missing "save_changes" parameter'}, status=400)
+        # Inform client that saving didn't happen (consider sending a success message for quantity update)
+        return JsonResponse({'message': 'Quantity updated locally, but not saved yet.'}, status=200)
 
     except Exception as e:
       return JsonResponse({'error': str(e)}, status=500)
