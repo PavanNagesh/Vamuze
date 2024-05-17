@@ -43,6 +43,8 @@ urlpatterns = [
     path('update/', views.update, name='update'),
     path('change', views.change, name='changE'),
     path('userprofile/update', views.update, name='update'),
+    path('cart', views.cart, name='cart'),
+    path('add-to-cart/', views.add_to_cart, name='add_to_cart'),
     
 ]
 
