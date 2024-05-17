@@ -7,63 +7,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart</title>
   <style>
-    /* Background for the entire page */
+    /* Styles for the entire page (adjust as needed) */
 
     /* Container for cart content with white background and some padding */
     .cart-container {
-  position: absolute;
-  bottom: 0;
-  width: 20%;
-  height: fit-content;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.636); /* Black background with 70% opacity */
-  border-radius: 20px; /* Curved corners */
-  padding: 20px; /* Adjust padding as needed */
-  margin: auto; /* Center the container horizontally */
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  color: White;
-      h2 {
+      position: absolute;
+      bottom: 0;
+      width: 20%;
+      height: fit-content;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.636); /* Black background with 70% opacity */
+      border-radius: 20px; /* Curved corners */
+      padding: 20px; /* Adjust padding as needed */
+      margin: auto; /* Center the container horizontally */
+      font-family: "Poppins", sans-serif;
+      font-weight: 400;
+      color: white;
+    }
+
+    .cart-container h2 {
       font-size: 18px;
       font-weight: bold;
       text-align: center;
     }
-    h3 {
+
+    .cart-container h3 {
       font-size: 16px;
       text-align: center;
     }
-    p {
+
+    .cart-container p {
       font-size: 16px;
       text-align: center;
     }
-    .cart-items {
+
+    .cart-container .cart-items {
       text-align: center; /* Consider left alignment for better readability */
       font-size: 16px;
     }
-}
 
     /* Font sizes for headings and paragraphs */
-    
 
-     body {
-  width: 100%;
-  height: 150vh;
-  background-image: url("/media/assets/img/portfolio10.jpg"); /* Replace with your image path */
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed; /* Ensures the background image stays fixed */
-  position: relative;
-  background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
-}
-
-   
+    body {
+      width: 100%;
+      height: 150vh;
+      background-image: url("/media/assets/img/portfolio10.jpg"); /* Replace with your image path */
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed; /* Ensures the background image stays fixed */
+      position: relative;
+      background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
+    }
   </style>
 </head>
 <body>
@@ -71,15 +72,15 @@
     <h2>Shopping Cart</h2>
     <div class="cart-items">
       {% for item in cart_items %}
-      <div class="cart-item" data-item-id="{{ item.id }}">
-        <h4>{{ item.item_name }}</h4>
-        <p>Price: ₹{{ item.price }}</p>
-        <div class="quantity-controls">
-          <button class="minus-btn">-</button>
-          <span class="ticket-count">{{ item.quantity }}</span>
-          <button class="plus-btn">+</button>
+        <div class="cart-item" data-item-id="{{ item.id }}">
+          <h4>{{ item.item_name }}</h4>
+          <p>Price: ₹{{ item.price }}</p>
+          <div class="quantity-controls">
+            <button class="minus-btn">-</button>
+            <span class="ticket-count">{{ item.quantity }}</span>
+            <button class="plus-btn">+</button>
+          </div>
         </div>
-      </div>
       {% endfor %}
     </div>
     <div class="cart-total">
@@ -103,42 +104,3 @@
     });
 
     function handleQuantityChange(event) {
-      const btn = event.target;
-      const ticketCount = btn.parentElement.querySelector('.ticket-count');
-      let newQuantity = parseInt(ticketCount.textContent);
-      if (btn.classList.contains('minus-btn') && newQuantity > 0) {
-        newQuantity--;
-      } else if (btn.classList.contains('plus-btn')) {
-        newQuantity++;
-      }
-      ticketCount.textContent = newQuantity;
-    }
-
-    // Add event listener for "Save Changes" button
-    const saveChangesBtn = document.getElementById('save-changes-btn');
-    saveChangesBtn.addEventListener('click', () => {
-      const cartItems = document.querySelectorAll('.cart-item');
-      const updatedCartData = [];
-
-      // Iterate over each cart item to collect updated quantities
-      cartItems.forEach(item => {
-        const itemId = item.dataset.itemId;
-        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-        updatedCartData.push({ id: itemId, quantity: quantity });
-      });
-
-      // Send updated cart data to server to save changes
-      fetch('/update-cart/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify(updatedCartData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Update total price on the page with the updated total price received from the server
-        const totalElement = document.getElementById('total');
-        totalElement.textContent = data.total_price;
-        console.log('
