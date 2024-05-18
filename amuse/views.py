@@ -83,7 +83,7 @@ def user_login(request):
 
         return render(request, 'login.html', {'error': 'Invalid username or password.'})
     else:
-        return render(request, 'login.html')
+        return render(request, 'login.html')
 
 @csrf_exempt
 def user_profile(request):
