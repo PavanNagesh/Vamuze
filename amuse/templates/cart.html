@@ -91,21 +91,7 @@
   </div>
 
   <script>
-  // Add event listeners for + and - buttons
-  const minusBtns = document.querySelectorAll('.minus-btn');
-  const plusBtns = document.querySelectorAll('.plus-btn');
-
-  minusBtns.forEach(btn => {
-    btn.addEventListener('click', handleQuantityChange);
-  });
-
-  plusBtns.forEach(btn => {
-    btn.addEventListener('click', handleQuantityChange);
-  });
-
-  // Event listener for Save Changes button
-  document.getElementById('save-changes-btn').addEventListener('click', saveChanges);
-
+  // Function to handle quantity change
   function handleQuantityChange(event) {
     const btn = event.target;
     const ticketCount = btn.parentElement.querySelector('.ticket-count');
@@ -118,9 +104,18 @@
     }
 
     ticketCount.textContent = currentQuantity;
-    updateTotalPrice(); // Update total price when quantity changes
+
+    // Remove item if quantity is 0
+    if (currentQuantity === 0) {
+      const cartItem = btn.closest('.cart-item');
+      cartItem.remove();
+      deleteCartItem(cartItem.dataset.itemId);
+    } else {
+      updateTotalPrice();
+    }
   }
 
+  // Function to save changes
   function saveChanges() {
     const cartItems = document.querySelectorAll('.cart-item');
     const updatedCartData = [];
@@ -151,6 +146,29 @@
     .catch(error => console.error('Error:', error));
   }
 
+  // Function to delete cart item
+  function deleteCartItem(itemId) {
+    fetch("{% url 'remove_from_cart' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+      body: JSON.stringify({ item_id: itemId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        console.error('Error:', data.error);
+      } else {
+        console.log(data.message);
+        document.getElementById('total').textContent = data.total_price.toFixed(2);
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  // Function to update total price
   function updateTotalPrice() {
     const cartItems = document.querySelectorAll('.cart-item');
     let totalPrice = 0;
@@ -163,6 +181,24 @@
 
     document.getElementById('total').textContent = totalPrice.toFixed(2);
   }
+
+  // Add event listeners for + and - buttons
+  const minusBtns = document.querySelectorAll('.minus-btn');
+  const plusBtns = document.querySelectorAll('.plus-btn');
+
+  minusBtns.forEach(btn => {
+    btn.addEventListener('click', handleQuantityChange);
+  });
+
+  plusBtns.forEach(btn => {
+    btn.addEventListener('click', handleQuantityChange);
+  });
+
+  // Add event listener for Save Changes button
+  document.getElementById('save-changes-btn').addEventListener('click', saveChanges);
+
+  // Initial call to set the correct total price on page load
+  updateTotalPrice();
 </script>
 </body>
 </html
