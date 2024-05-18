@@ -109,7 +109,7 @@
     if (currentQuantity === 0) {
       const cartItem = btn.closest('.cart-item');
       cartItem.remove();
-      deleteCartItem(cartItem.dataset.itemId);
+      deleteCartItem(cartItem.dataset.itemName);
     } else {
       updateTotalPrice();
     }
@@ -121,9 +121,9 @@
     const updatedCartData = [];
 
     cartItems.forEach(item => {
-      const itemId = item.dataset.itemId;
+      const itemName = item.dataset.itemName;
       const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-      updatedCartData.push({ item_name, quantity });
+      updatedCartData.push({ item_name: itemName, quantity });
     });
 
     fetch("{% url 'update_cart' %}", {
@@ -147,14 +147,14 @@
   }
 
   // Function to delete cart item
-  function deleteCartItem(itemId) {
+  function deleteCartItem(itemName) {
     fetch("{% url 'remove_from_cart' %}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': '{{ csrf_token }}',
       },
-      body: JSON.stringify({ item_id: itemId }),
+      body: JSON.stringify({ item_name: itemName }),
     })
     .then(response => response.json())
     .then(data => {
