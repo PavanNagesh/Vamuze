@@ -91,114 +91,84 @@
   </div>
 
   <script>
-  // Function to handle quantity change
-  function handleQuantityChange(event) {
-    const btn = event.target;
-    const ticketCount = btn.parentElement.querySelector('.ticket-count');
-    let currentQuantity = parseInt(ticketCount.textContent);
+    // Add event listeners for + and - buttons
+    const minusBtns = document.querySelectorAll('.minus-btn');
+    const plusBtns = document.querySelectorAll('.plus-btn');
 
-    if (btn.classList.contains('minus-btn') && currentQuantity > 0) {
-      currentQuantity--;
-    } else if (btn.classList.contains('plus-btn')) {
-      currentQuantity++;
-    }
+    minusBtns.forEach(btn => {
+      btn.addEventListener('click', handleQuantityChange);
+    });
 
-    ticketCount.textContent = currentQuantity;
+    plusBtns.forEach(btn => {
+      btn.addEventListener('click', handleQuantityChange);
+    });
 
-    // Remove item if quantity is 0
-    if (currentQuantity === 0) {
-      const cartItem = btn.closest('.cart-item');
-      cartItem.remove();
-      deleteCartItem(cartItem.dataset.itemName);
-    } else {
+    function handleQuantityChange(event) {
+      const btn = event.target;
+      const ticketCount = btn.parentElement.querySelector('.ticket-count');
+      let currentQuantity = parseInt(ticketCount.textContent);
+
+      if (btn.classList.contains('minus-btn') && currentQuantity > 0) {
+        currentQuantity--;
+      } else if (btn.classList.contains('plus-btn')) {
+        currentQuantity++;
+      }
+
+      ticketCount.textContent = currentQuantity;
+      console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
+
       updateTotalPrice();
     }
-  }
 
-  // Function to save changes
-  function saveChanges() {
-    const cartItems = document.querySelectorAll('.cart-item');
-    const updatedCartData = [];
+    function updateTotalPrice() {
+      const cartItems = document.querySelectorAll('.cart-item');
+      let totalPrice = 0;
 
-    cartItems.forEach(item => {
-      const itemName = item.dataset.itemName;
-      const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-      updatedCartData.push({ item_name: itemName, quantity });
+      cartItems.forEach(item => {
+        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
+        const price = parseFloat(item.querySelector('p').textContent.replace('Price: ₹', ''));
+        totalPrice += quantity * price;
+      });
+
+      document.getElementById('total').textContent = totalPrice.toFixed(2);
+      console.log(`Updated Total Price: ₹${totalPrice.toFixed(2)}`);
+    }
+
+    // Save changes to the cart using AJAX
+    document.getElementById('save-changes-btn').addEventListener('click', function() {
+      const cartItems = document.querySelectorAll('.cart-item');
+      const updatedCartData = [];
+
+      cartItems.forEach(item => {
+        const itemId = item.dataset.itemId;
+        const itemName = item.querySelector('h4').textContent;
+        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
+
+        updatedCartData.push({ item_id: itemId, item_name: itemName, quantity: quantity });
+      });
+
+      fetch("{% url 'update_cart' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify(updatedCartData),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Error:', data.error);
+        } else {
+          console.log(data.message);
+          document.getElementById('total').textContent = data.total_price.toFixed(2);
+        }
+      })
+      .catch(error => console.error('Error:', error));
     });
 
-    fetch("{% url 'update_cart' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}',
-      },
-      body: JSON.stringify(updatedCartData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        console.error('Error:', data.error);
-      } else {
-        console.log(data.message);
-        document.getElementById('total').textContent = data.total_price.toFixed(2);
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-
-  // Function to delete cart item
-  function deleteCartItem(itemName) {
-    fetch("{% url 'remove_from_cart' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}',
-      },
-      body: JSON.stringify({ item_name: itemName }),
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        console.error('Error:', data.error);
-      } else {
-        console.log(data.message);
-        document.getElementById('total').textContent = data.total_price.toFixed(2);
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-
-  // Function to update total price
-  function updateTotalPrice() {
-    const cartItems = document.querySelectorAll('.cart-item');
-    let totalPrice = 0;
-
-    cartItems.forEach(item => {
-      const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-      const price = parseFloat(item.querySelector('p').textContent.replace('Price: ₹', ''));
-      totalPrice += quantity * price;
-    });
-
-    document.getElementById('total').textContent = totalPrice.toFixed(2);
-  }
-
-  // Add event listeners for + and - buttons
-  const minusBtns = document.querySelectorAll('.minus-btn');
-  const plusBtns = document.querySelectorAll('.plus-btn');
-
-  minusBtns.forEach(btn => {
-    btn.addEventListener('click', handleQuantityChange);
-  });
-
-  plusBtns.forEach(btn => {
-    btn.addEventListener('click', handleQuantityChange);
-  });
-
-  // Add event listener for Save Changes button
-  document.getElementById('save-changes-btn').addEventListener('click', saveChanges);
-
-  // Initial call to set the correct total price on page load
-  updateTotalPrice();
-</script>
+    // Initial call to set the correct total price on page load
+    updateTotalPrice();
+  </script>
 </body>
-</html
+</html>
