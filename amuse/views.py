@@ -61,10 +61,26 @@ from django.db import connection
 from django.contrib.auth import login as auth_login
 from .models import User
 
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.db import connection
+from django.contrib.auth import login as auth_login
+from .models import User
+
+# Dictionary to store login attempts and lockout status
+login_attempts = {}
+locked_users = {}
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+
+        # Check if the user is locked out
+        if username in locked_users and locked_users[username]['locked']:
+            remaining_time = (locked_users[username]['unlock_time'] - timezone.now()).total_seconds()
+            if remaining_time > 0:
+                return render(request, 'lockout.html', {'remaining_time': int(remaining_time)})
 
         query = f"SELECT * FROM amuse_user WHERE username = '{username}' AND password = '{password}'"
 
@@ -77,9 +93,28 @@ def user_login(request):
             user.last_login = timezone.now()
             user.save()
 
+            # Reset login attempts for this user
+            if username in login_attempts:
+                del login_attempts[username]
+
             # Log the user in using Django's login function
             auth_login(request, user)
             return redirect('index')
+
+        else:
+            # Failed login attempt
+            if username in login_attempts:
+                login_attempts[username]['attempts'] += 1
+            else:
+                login_attempts[username] = {'attempts': 1}
+
+            # Check if the user has reached the maximum number of login attempts
+            if login_attempts[username]['attempts'] >= 5:
+                # Lock the user out
+                locked_users[username] = {'locked': True, 'unlock_time': timezone.now() + timezone.timedelta(minutes=1)}  # Lockout time: 1 minute
+                del login_attempts[username]  # Reset login attempts for this user
+
+                return render(request, 'lockout.html', {'remaining_time': 60})  # 1 minute in seconds
 
         return render(request, 'login.html', {'error': 'Invalid username or password.'})
     else:
