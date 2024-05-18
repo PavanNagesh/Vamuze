@@ -105,23 +105,19 @@
     ticketCount.textContent = currentQuantity;
     console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
 
-    if (currentQuantity === 0) {
-      const cartItem = btn.closest('.cart-item');
-      cartItem.remove();
-      deleteCartItem(cartItem.dataset.itemId);
-    } else {
-      updateTotalPrice();
-    }
+    // Send AJAX request to update quantity in database
+    const itemId = btn.closest('.cart-item').dataset.itemId;
+    updateCartItemQuantity(itemId, currentQuantity);
   }
 
-  function deleteCartItem(itemId) {
-    fetch("{% url 'remove_from_cart' %}", {
+  function updateCartItemQuantity(itemId, newQuantity) {
+    fetch("{% url 'update_cart' %}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': '{{ csrf_token }}',
       },
-      body: JSON.stringify({ item_id: itemId }),
+      body: JSON.stringify({ item_id: itemId, quantity: newQuantity }),
     })
     .then(response => response.json())
     .then(data => {
