@@ -267,7 +267,7 @@ def cart(request):
   return render(request, 'cart.html', context)
 
 from django.http import JsonResponse
-from .models import YourItemModel
+from .models import CartItem
 
 @login_required
 def delete_item(request):
