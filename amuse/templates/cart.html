@@ -123,7 +123,7 @@
     cartItems.forEach(item => {
       const itemId = item.dataset.itemId;
       const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-      updatedCartData.push({ itemId, quantity });
+      updatedCartData.push({ item_name, quantity });
     });
 
     fetch("{% url 'update_cart' %}", {
