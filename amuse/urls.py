@@ -44,9 +44,11 @@ urlpatterns = [
     path('update/', views.update, name='update'),
     path('change', views.change, name='changE'),
     path('userprofile/update', views.update, name='update'),
-    path('cart', views.cart, name='cart'),
-    path('add-to-cart/', views.add_to_cart, name='add_to_cart'),
-    path('update-cart/', views.update_cart, name='update_cart'),
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    path('remove_from_cart/', views.remove_from_cart, name='remove_from_cart'),
+    path('update_cart/', views.update_cart, name='update_cart'),
+    path('cart/', views.cart, name='cart'),
+
     
 ]
 
