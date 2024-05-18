@@ -91,21 +91,6 @@
   </div>
 
   <script>
-  // Add event listeners for + and - buttons
-  const minusBtns = document.querySelectorAll('.minus-btn');
-  const plusBtns = document.querySelectorAll('.plus-btn');
-
-  minusBtns.forEach(btn => {
-    btn.addEventListener('click', handleQuantityChange);
-  });
-
-  plusBtns.forEach(btn => {
-    btn.addEventListener('click', handleQuantityChange);
-  });
-
-  // Event listener for Save Changes button
-  document.getElementById('save-changes-btn').addEventListener('click', saveChanges);
-
   function handleQuantityChange(event) {
     const btn = event.target;
     const ticketCount = btn.parentElement.querySelector('.ticket-count');
@@ -118,37 +103,11 @@
     }
 
     ticketCount.textContent = currentQuantity;
-    updateTotalPrice(); // Update total price when quantity changes
-  }
 
-  function saveChanges() {
-    const cartItems = document.querySelectorAll('.cart-item');
-    const updatedCartData = [];
-
-    cartItems.forEach(item => {
-      const itemId = item.dataset.itemId;
-      const quantity = parseInt(item.querySelector('.ticket-count').textContent);
-      updatedCartData.push({ itemId, quantity });
-    });
-
-    fetch("{% url 'update_cart' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}',
-      },
-      body: JSON.stringify(updatedCartData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        console.error('Error:', data.error);
-      } else {
-        console.log(data.message);
-        document.getElementById('total').textContent = data.total_price.toFixed(2);
-      }
-    })
-    .catch(error => console.error('Error:', error));
+    if (currentQuantity === 0 || currentQuantity > 9) {
+      const cartItem = btn.closest('.cart-item');
+      cartItem.remove();
+    }
   }
 
   function updateTotalPrice() {
@@ -163,6 +122,21 @@
 
     document.getElementById('total').textContent = totalPrice.toFixed(2);
   }
+
+  // Add event listeners for + and - buttons
+  const minusBtns = document.querySelectorAll('.minus-btn');
+  const plusBtns = document.querySelectorAll('.plus-btn');
+
+  minusBtns.forEach(btn => {
+    btn.addEventListener('click', handleQuantityChange);
+  });
+
+  plusBtns.forEach(btn => {
+    btn.addEventListener('click', handleQuantityChange);
+  });
+
+  // Initial call to set the correct total price on page load
+  updateTotalPrice();
 </script>
 </body>
 </html
