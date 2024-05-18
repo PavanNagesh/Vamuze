@@ -828,7 +828,7 @@ section {
 
 #portfolio .portfolio-item {
   margin-bottom: 30px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #portfolio .portfolio-item img {
