@@ -265,3 +265,20 @@ def cart(request):
   print(calculated_total_price)  # Add this line
 
   return render(request, 'cart.html', context)
+
+from django.http import JsonResponse
+from .models import YourItemModel
+
+@login_required
+def delete_item(request):
+    if request.method == 'POST':
+        data = request.POST
+        item_id = data.get('item_id')
+        try:
+            item = YourItemModel.objects.get(id=item_id)
+            item.delete()
+            return JsonResponse({'message': 'Item deleted successfully.'})
+        except YourItemModel.DoesNotExist:
+            return JsonResponse({'error': 'Item not found.'}, status=404)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
