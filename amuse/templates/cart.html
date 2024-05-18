@@ -118,12 +118,15 @@
     console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
 
     if (currentQuantity === 0) {
-      // If quantity becomes 0, remove the item from the cart
+      // If quantity becomes 0, remove the item from the cart visually
       const cartItem = btn.closest('.cart-item');
       cartItem.parentNode.removeChild(cartItem);
     }
 
     updateTotalPrice();
+
+    // Save changes to the cart
+    saveChanges();
   }
 
   function updateTotalPrice() {
@@ -141,7 +144,7 @@
   }
 
   // Save changes to the cart using AJAX
-  document.getElementById('save-changes-btn').addEventListener('click', function() {
+  function saveChanges() {
     const cartItems = document.querySelectorAll('.cart-item');
     const updatedCartData = [];
 
@@ -150,7 +153,13 @@
       const itemName = item.querySelector('h4').textContent;
       const quantity = parseInt(item.querySelector('.ticket-count').textContent);
 
-      updatedCartData.push({ item_id: itemId, item_name: itemName, quantity: quantity });
+      if (quantity > 0) {
+        // Only include items with quantity > 0 in the updated cart data
+        updatedCartData.push({ item_id: itemId, item_name: itemName, quantity: quantity });
+      } else {
+        // If quantity is 0, remove the item from the database
+        deleteItem(itemId);
+      }
     });
 
     fetch("{% url 'update_cart' %}", {
@@ -171,7 +180,27 @@
       }
     })
     .catch(error => console.error('Error:', error));
-  });
+  }
+
+  function deleteItem(itemId) {
+    fetch("{% url 'delete_item' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+      body: JSON.stringify({ item_id: itemId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        console.error('Error:', data.error);
+      } else {
+        console.log(data.message);
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
 
   // Initial call to set the correct total price on page load
   updateTotalPrice();
