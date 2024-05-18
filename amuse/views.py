@@ -173,9 +173,10 @@ def update(request):
     return render(request, 'update.html')
 
 
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import CartItem
+import json
 
 @login_required
 def add_to_cart(request):
@@ -216,54 +217,38 @@ def remove_from_cart(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import CartItem
-import json
-
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import CartItem
-import json
-
 @login_required
 def update_cart(request):
     if request.method == 'POST':
         try:
-            # Get the updated cart data from the POST request
             updated_cart_data = json.loads(request.body)
             
-            # Loop through the updated cart data and update the database
             for item_data in updated_cart_data:
                 item_id = item_data.get('item_id')
                 quantity = item_data.get('quantity')
                 
-                # Fetch the cart item by id and user
-                cart_item = CartItem.objects.get(user=request.user, id=item_id)
-                
-                # Update the quantity
-                cart_item.quantity = quantity
-                cart_item.save()
+                if quantity == 0 or quantity > 9:  # Delete item if quantity is 0 or greater than 9
+                    CartItem.objects.filter(user=request.user, id=item_id).delete()
+                else:
+                    cart_item = CartItem.objects.get(user=request.user, id=item_id)
+                    cart_item.quantity = quantity
+                    cart_item.save()
             
-            # Calculate the total price (assuming you have a function for this)
             total_price = calculate_total_price(request.user)
             
-            # Return a JSON response with the updated total price
             return JsonResponse({'message': 'Changes saved successfully', 'total_price': total_price}, status=200)
         
         except Exception as e:
-            # Return an error response if there's an exception
             return JsonResponse({'error': str(e)}, status=500)
     
     else:
-        # Return a bad request response if the request method is not POST
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def calculate_total_price(user):
     cart_items = CartItem.objects.filter(user=user)
     total_price = sum(item.price * item.quantity for item in cart_items)
     return total_price
-
+    
 from django.shortcuts import render
 from .models import CartItem
 
