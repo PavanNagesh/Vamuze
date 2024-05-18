@@ -102,12 +102,19 @@
       currentQuantity++;
     }
 
-    ticketCount.textContent = currentQuantity;
-    console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
+    // If the new quantity is 0, remove the item from the cart
+    if (currentQuantity === 0) {
+      const cartItem = btn.closest('.cart-item');
+      cartItem.remove();
+      updateTotalPrice(); // Update total price after item removal
+    } else {
+      ticketCount.textContent = currentQuantity;
+      console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
 
-    // Send AJAX request to update quantity in database
-    const itemId = btn.closest('.cart-item').dataset.itemId;
-    updateCartItemQuantity(itemId, currentQuantity);
+      // Send AJAX request to update quantity in database
+      const itemId = btn.closest('.cart-item').dataset.itemId;
+      updateCartItemQuantity(itemId, currentQuantity);
+    }
   }
 
   function updateCartItemQuantity(itemId, newQuantity) {
