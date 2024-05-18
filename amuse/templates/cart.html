@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i|Poppins:300,400,500,700" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart</title>
@@ -11,62 +11,60 @@
 
     /* Container for cart content with white background and some padding */
     .cart-container {
-  width: 25%; /* Adjust width to be narrower */
-  max-height: 90vh; /* Limit the height to be less than the viewport height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.636); /* Semi-transparent black background */
-  border-radius: 20px; /* Rounded corners */
-  padding: 20px; /* Inner spacing */
-  font-family: "Poppins", sans-serif; /* Font family */
-  font-weight: 400; /* Regular font weight */
-  color: white; /* Text color */
-}
+      width: 25%; /* Adjust width to be narrower */
+      max-height: 90vh; /* Limit the height to be less than the viewport height */
+      overflow-y: auto; /* Enable vertical scrolling */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.636); /* Semi-transparent black background */
+      border-radius: 20px; /* Rounded corners */
+      padding: 20px; /* Inner spacing */
+      font-family: "Poppins", sans-serif; /* Font family */
+      font-weight: 400; /* Regular font weight */
+      color: white; /* Text color */
+    }
 
-/* Heading and Paragraph Styling */
-.cart-container h2 {
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-}
+    /* Heading and Paragraph Styling */
+    .cart-container h2 {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
 
-.cart-container h3 {
-  font-size: 16px;
-  text-align: center;
-}
+    .cart-container h3 {
+      font-size: 16px;
+      text-align: center;
+    }
 
-.cart-container p {
-  font-size: 16px;
-  text-align: center;
-}
+    .cart-container p {
+      font-size: 16px;
+      text-align: center;
+    }
 
-/* Cart Items Styling */
-.cart-container .cart-items {
-  text-align: center; /* Left alignment for better readability */
-  font-size: 16px;
-  width: 100%; /* Ensure the items take full width of the container */
-}
+    /* Cart Items Styling */
+    .cart-container .cart-items {
+      text-align: center; /* Left alignment for better readability */
+      font-size: 16px;
+      width: 100%; /* Ensure the items take full width of the container */
+    }
 
     /* Font sizes for headings and paragraphs */
-
-   body {
-  width: 100%;
-  height: 100vh; /* Match the viewport height */
-  background-image: url("/media/assets/img/portfolio10.jpg"); /* Path to the background image */
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed; /* The background image stays fixed when scrolling */
-  background-color: rgba(0, 0, 0, 0.7); /* A semi-transparent black overlay */
-  margin: 0; /* Remove default body margin */
-  display: flex; /* Use flexbox to center the container */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  overflow: hidden; /* Prevent body from scrolling */
-}
-
+    body {
+      width: 100%;
+      height: 100vh; /* Match the viewport height */
+      background-image: url("{% static 'assets/img/portfolio10.jpg' %}"); /* Path to the background image */
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed; /* The background image stays fixed when scrolling */
+      background-color: rgba(0, 0, 0, 0.7); /* A semi-transparent black overlay */
+      margin: 0; /* Remove default body margin */
+      display: flex; /* Use flexbox to center the container */
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      overflow: hidden; /* Prevent body from scrolling */
+    }
   </style>
 </head>
 <body>
@@ -135,6 +133,39 @@
       document.getElementById('total').textContent = totalPrice.toFixed(2);
       console.log(`Updated Total Price: ₹${totalPrice.toFixed(2)}`);
     }
+
+    // Save changes to the cart using AJAX
+    document.getElementById('save-changes-btn').addEventListener('click', function() {
+      const cartItems = document.querySelectorAll('.cart-item');
+      const updatedCartData = [];
+
+      cartItems.forEach(item => {
+        const itemId = item.dataset.itemId;
+        const itemName = item.querySelector('h4').textContent;
+        const quantity = parseInt(item.querySelector('.ticket-count').textContent);
+
+        updatedCartData.push({ item_id: itemId, item_name: itemName, quantity: quantity });
+      });
+
+      fetch("{% url 'update_cart' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify(updatedCartData),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Error:', data.error);
+        } else {
+          console.log(data.message);
+          document.getElementById('total').textContent = data.total_price.toFixed(2);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
 
     // Initial call to set the correct total price on page load
     updateTotalPrice();
