@@ -198,20 +198,23 @@ def add_to_cart(request):
 @login_required
 def remove_from_cart(request):
     if request.method == 'POST':
-        item_name = request.POST.get('item_name')
+        item_id = json.loads(request.body).get('item_id')
         
         # Check if the item exists in the user's cart
-        existing_item = CartItem.objects.filter(user=request.user, item_name=item_name).first()
-        if existing_item:
-            if existing_item.quantity > 1:
-                existing_item.quantity -= 1
-                existing_item.save()
-            else:
-                existing_item.delete()
+        try:
+            cart_item = CartItem.objects.get(user=request.user, id=item_id)
+            cart_item.delete()
 
-        return redirect('portfolio')
+            # Calculate the total price
+            total_price = calculate_total_price(request.user)
+
+            return JsonResponse({'message': 'Item removed successfully', 'total_price': total_price}, status=200)
+
+        except CartItem.DoesNotExist:
+            return JsonResponse({'error': 'Item not found in cart'}, status=404)
+
     else:
-        return redirect('portfolio')
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
