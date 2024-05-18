@@ -54,7 +54,7 @@
     body {
       width: 100%;
       height: 100vh; /* Match the viewport height */
-      background-image: url("/media/assets/img/portfolio10.jpg"); /* Path to the background image */
+      background-image: url("{% static 'assets/img/portfolio10.jpg' %}"); /* Path to the background image */
       background-repeat: no-repeat;
       background-size: cover;
       background-attachment: fixed; /* The background image stays fixed when scrolling */
@@ -115,7 +115,7 @@
       }
 
       ticketCount.textContent = currentQuantity;
-      console.log(Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity});
+      console.log(`Item ID: ${btn.closest('.cart-item').dataset.itemId}, New Quantity: ${currentQuantity}`);
 
       updateTotalPrice();
     }
@@ -131,7 +131,7 @@
       });
 
       document.getElementById('total').textContent = totalPrice.toFixed(2);
-      console.log(Updated Total Price: ₹${totalPrice.toFixed(2)});
+      console.log(`Updated Total Price: ₹${totalPrice.toFixed(2)}`);
     }
 
     // Save changes to the cart using AJAX
