@@ -11,60 +11,64 @@
 
     /* Container for cart content with white background and some padding */
     .cart-container {
-      position: absolute;
-      bottom: 0;
-      width: 20%;
-      height: fit-content;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      background-color: rgba(0, 0, 0, 0.636); /* Black background with 70% opacity */
-      border-radius: 20px; /* Curved corners */
-      padding: 20px; /* Adjust padding as needed */
-      margin: auto; /* Center the container horizontally */
-      font-family: "Poppins", sans-serif;
-      font-weight: 400;
-      color: white;
-    }
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the container */
+  width: 80%; /* Adjust width as needed */
+  max-height: 90vh; /* Limit the height to be less than the viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.636); /* Semi-transparent black background */
+  border-radius: 20px; /* Rounded corners */
+  padding: 20px; /* Inner spacing */
+  font-family: "Poppins", sans-serif; /* Font family */
+  font-weight: 400; /* Regular font weight */
+  color: white; /* Text color */
+}
+
 
     .cart-container h2 {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-    }
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
 
-    .cart-container h3 {
-      font-size: 16px;
-      text-align: center;
-    }
+.cart-container h3 {
+  font-size: 16px;
+  text-align: center;
+}
 
-    .cart-container p {
-      font-size: 16px;
-      text-align: center;
-    }
+.cart-container p {
+  font-size: 16px;
+  text-align: center;
+}
 
     .cart-container .cart-items {
-      text-align: center; /* Consider left alignment for better readability */
-      font-size: 16px;
-    }
+  text-align: left; /* Changed to left alignment for better readability */
+  font-size: 16px;
+  width: 100%; /* Ensure the items take full width of the container */
+}
 
     /* Font sizes for headings and paragraphs */
 
     body {
-      width: 100%;
-      height: 150vh;
-      background-image: url("/media/assets/img/portfolio10.jpg"); /* Replace with your image path */
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-attachment: fixed; /* Ensures the background image stays fixed */
-      position: relative;
-      background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
-    }
+  width: 100%;
+  height: 100vh; /* Change to 100vh to match the viewport height */
+  background-image: url("/media/assets/img/portfolio10.jpg"); /* Path to the background image */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed; /* The background image stays fixed when scrolling */
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.7); /* A semi-transparent black overlay */
+  margin: 0; /* Remove default body margin */
+  overflow: hidden; /* Prevent body from scrolling */
+}
+
   </style>
 </head>
 <body>
