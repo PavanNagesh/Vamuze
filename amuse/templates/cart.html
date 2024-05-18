@@ -118,6 +118,7 @@
     }
 
     ticketCount.textContent = currentQuantity;
+    updateTotalPrice(); // Update total price when quantity changes
   }
 
   function saveChanges() {
@@ -149,8 +150,19 @@
     })
     .catch(error => console.error('Error:', error));
   }
-    // Initial call to set the correct total price on page load
-    updateTotalPrice();
-  </script>
+
+  function updateTotalPrice() {
+    const cartItems = document.querySelectorAll('.cart-item');
+    let totalPrice = 0;
+
+    cartItems.forEach(item => {
+      const quantity = parseInt(item.querySelector('.ticket-count').textContent);
+      const price = parseFloat(item.querySelector('p').textContent.replace('Price: ₹', ''));
+      totalPrice += quantity * price;
+    });
+
+    document.getElementById('total').textContent = totalPrice.toFixed(2);
+  }
+</script>
 </body>
 </html
