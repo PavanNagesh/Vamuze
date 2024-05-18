@@ -224,13 +224,13 @@ def update_cart(request):
             updated_cart_data = json.loads(request.body)
             
             for item_data in updated_cart_data:
-                item_id = item_data.get('item_id')
+                item_name = item_data.get('item_name')  # Changed to item_name
                 quantity = item_data.get('quantity')
                 
                 if quantity == 0 or quantity > 9:  # Delete item if quantity is 0 or greater than 9
-                    CartItem.objects.filter(user=request.user, id=item_id).delete()
+                    CartItem.objects.filter(user=request.user, item_name=item_name).delete()  # Changed to item_name
                 else:
-                    cart_item = CartItem.objects.get(user=request.user, id=item_id)
+                    cart_item = CartItem.objects.get(user=request.user, item_name=item_name)  # Changed to item_name
                     cart_item.quantity = quantity
                     cart_item.save()
             
