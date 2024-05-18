@@ -221,6 +221,11 @@ from django.contrib.auth.decorators import login_required
 from .models import CartItem
 import json
 
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import CartItem
+import json
+
 @login_required
 def update_cart(request):
     if request.method == 'POST':
@@ -230,11 +235,11 @@ def update_cart(request):
             
             # Loop through the updated cart data and update the database
             for item_data in updated_cart_data:
-                item_name = item_data.get('item_name')
+                item_id = item_data.get('item_id')
                 quantity = item_data.get('quantity')
                 
-                # Fetch the cart item by item_name and user
-                cart_item = CartItem.objects.get(user=request.user, item_name=item_name)
+                # Fetch the cart item by id and user
+                cart_item = CartItem.objects.get(user=request.user, id=item_id)
                 
                 # Update the quantity
                 cart_item.quantity = quantity
