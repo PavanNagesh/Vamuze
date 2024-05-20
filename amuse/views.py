@@ -62,28 +62,61 @@ from django.contrib.auth import login as auth_login
 from .models import User
 
 def user_login(request):
+    MAX_FAILED_ATTEMPTS = 3
+    TIMEOUT_DURATION = timedelta(minutes=5)
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        query = f"SELECT * FROM amuse_user WHERE username = '{username}' AND password = '{password}'"
+        # Check for session variables
+        failed_attempts = request.session.get('failed_attempts', 0)
+        lockout_time = request.session.get('lockout_time')
 
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            row = cursor.fetchone()
+        # Check if the user is locked out
+        if lockout_time:
+            # Convert lockout_time to a datetime object
+            lockout_time = datetime.fromisoformat(lockout_time)
+            if datetime.now() < lockout_time:
+                # User is still in lockout period
+                messages.error(request, 'You have made too many failed login attempts. Please try again later.')
+                return render(request, 'login.html')
 
-        if row:
-            user = User.objects.get(username=username)
-            user.last_login = timezone.now()
-            user.save()
+            # Reset failed attempts and lockout time if the lockout period has passed
+            request.session.pop('failed_attempts', None)
+            request.session.pop('lockout_time', None)
 
-            # Log the user in using Django's login function
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            # Successful login
             auth_login(request, user)
+            # Reset failed attempts after successful login
+            request.session.pop('failed_attempts', None)
             return redirect('index')
+        else:
+            # Increment failed attempts
+            failed_attempts += 1
+            request.session['failed_attempts'] = failed_attempts
 
-        return render(request, 'login.html', {'error': 'Invalid username or password.'})
-    else:
-        return render(request, 'login.html')
+            # Check if the user has reached the maximum failed attempts
+            if failed_attempts >= MAX_FAILED_ATTEMPTS:
+                # Calculate the lockout end time
+                lockout_end_time = datetime.now() + TIMEOUT_DURATION
+                # Store the lockout end time in the session
+                request.session['lockout_time'] = lockout_end_time.isoformat()
+
+                # Display an error message and return to the login page
+                messages.error(request, 'You have made too many failed login attempts. Please try again later.')
+                return render(request, 'login.html')
+
+            # If failed attempts is less than the limit, display an error message
+            messages.error(request, 'Invalid username or password.')
+            return render(request, 'login.html')
+
+    # Handle GET requests
+    return render(request, 'login.html')
 
 @csrf_exempt
 def user_profile(request):
